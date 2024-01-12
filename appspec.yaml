@@ -1,0 +1,18 @@
+version: 0.0
+os: linux
+files:
+  - source: /
+    destination: /home/ubuntu/my-app/ansible
+hooks:
+  BeforeInstall:
+    - location: scripts/before_install.sh  # Add any necessary commands
+  AfterInstall:
+    - location: scripts/after_install.sh  # Add any necessary commands
+  ApplicationStart:
+    - location: scripts/application_start.sh  # Add any necessary commands
+    - location: /home/ubuntu/my-app/ansible/node_modules
+      overwrite: true
+  ValidateService:
+    - location: scripts/validate_service.sh  # Add any necessary commands
+
+

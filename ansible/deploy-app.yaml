@@ -1,0 +1,37 @@
+---
+- name: Deploy Node.js Application
+  hosts: localhost  # Replace with your EC2 inventory group or specific host(s)
+  become: yes
+
+  vars:
+    app_directory: /  # Replace with your application directory on the remote server
+
+  tasks:
+    - name: Update apt cache (for Debian-based systems)
+      apt:
+        update_cache: yes
+      when: ansible_os_family == 'Debian'
+
+    - name: Install Node.js and npm (adjust for your system)
+      package:
+        name:
+          - nodejs
+          - npm
+      when: ansible_os_family == 'Debian'  # Adjust for your OS
+
+    - name: Copy application files to the remote server
+      synchronize:
+        src: /home/ubuntu/my-app   # Path to your local application directory
+        dest: "{{ app_directory }}"
+      delegate_to: localhost
+
+    - name: Install application dependencies
+      command: npm install
+      args:
+        chdir: "{{ app_directory }}"
+
+    - name: Start the Node.js application
+      command: npm start  # Adjust the command to start your application
+      args:
+        chdir: "{{ app_directory }}"
+
